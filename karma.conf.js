@@ -26,13 +26,38 @@ module.exports = function (config) {
                 "./index.ts",
                 "./lib/**/*.ts",
                 "./test/**/*.ts"
-            ]
+            ],
+            /* for debug */
+            bundlerOptions: {
+                sourceMap: true
+            },
+            coverageOptions: {
+                instrumentation: false
+            }
         },
 
         reporters: ["dots", "karma-typescript"],
 
-        browsers,
+        //browsers,
+        //singleRun: true
+        //browsers: ["ChromeHeadless"],
 
-        singleRun: true
+        /* for debug */
+        browsers: ["ChromeDebug"],
+        singleRun: false,
+        autoWatch: true,
+        customLaunchers: {
+            ChromeDebug: {
+                base: 'Chrome',
+                flags: [
+                    "--no-sandbox",
+                    //"--user-data-dir=/tmp/chrome-test-profile",
+                    "--disable-web-security",
+                    //"--remote-debugging-address=0.0.0.0",
+                    "--remote-debugging-port=9222",
+                ],
+                debug: true,
+            }
+        }
     });
 };
