@@ -253,8 +253,10 @@ export interface IExpandedODataQuery<TEntity, TProperty, TExtra = {}> extends IO
         : IExpandedODataQuery<TEntity, AU<TProperty[K1]>, TExtra>;
 }
 
+// eXclude undefined
+type XU<T> = T extends undefined ? never : T;
 // Array un-wrapper
-type AU<T> = T extends any[] ? T[0] : T;
+type AU<T> = XU<T extends any[] ? T[0] : T>;
 
 function createExpandArgs(nav: any, prm1?: any, prm2?: any, ...scopes) {
     let selector;
