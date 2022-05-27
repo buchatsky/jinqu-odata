@@ -522,7 +522,7 @@ it("should handle date literal", async () => {
 
     it("should handle byKey(single)", async () => {
         const value = getCompany();
-        const result = Object.assign({}, { "@odata.context": "ctx" }, value);
+        const result = Object.assign({}, value);
         const prv = new MockRequestProvider(result);
         const query1 = new CompanyService(prv).companies().byKey(5);
         const response1 = await query1.singleAsync();
@@ -614,5 +614,24 @@ it("should handle date literal", async () => {
         expect(url).equal("api/Companies");
         expect(provider.options.method).equal("PUT");
     });
+
+    it("should substitute header", async () => {
+        const svc = new ODataService({
+            ajaxProvider: provider,
+            ajaxInterceptor: {
+                intercept: (options) => {
+                    options.headers = Object.assign({}, options.headers, { Authorization: "67890" } );
+                    return options;
+                }
+            }
+        });
+        const query = svc.createQuery<ICompany>("Companies")
+            .withOptions({ headers: { "Accept": "qwerty", Authorization: "12345" } });
+        expect(query.toArrayAsync()).to.be.fulfilled.and.eventually.be.null;
+
+        expect(provider.options.headers).property("Accept").is.equal("qwerty");
+        expect(provider.options.headers).property("Authorization").is.equal("67890");
+    });
+
 
 });

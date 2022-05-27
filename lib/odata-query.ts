@@ -235,6 +235,7 @@ export interface IODataQuery<T, TExtra = {}> extends IQueryBase {
     insertAsync(returnInserted?: boolean): PromiseLike<Result<T, TExtra>>;
     updateAsync(returnUpdated?: boolean): PromiseLike<Result<T, TExtra>>;
     deleteAsync(): PromiseLike<Result<void, TExtra>>;
+    withOptions(options: AjaxOptions): IODataQuery<T, TExtra>;
 }
 
 export interface IOrderedODataQuery<T, TExtra = {}> extends IODataQuery<T, TExtra> {

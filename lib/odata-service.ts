@@ -9,10 +9,15 @@ import { ODataQuery } from "./odata-query";
 import { ODataQueryProvider } from "./odata-query-provider";
 import { ODataFuncs } from "./shared";
 
+export interface IAjaxInterceptor {
+    intercept(options: AjaxOptions): AjaxOptions;
+}
+
 export interface IODataServiceOptions<TResponse> {
     baseAddress?: string;
     ajaxProvider?: IAjaxProvider<TResponse>;
     updateMethod?: "PATCH" | "PUT";
+    ajaxInterceptor?: IAjaxInterceptor;
 }
 
 export class ODataService<TResponse = Response>
@@ -43,7 +48,7 @@ export class ODataService<TResponse = Response>
     public request<TResult, TExtra>(params: QueryParameter[], options: AjaxOptions[])
         : PromiseLike<Result<TResult, TExtra>> {
         const d = Object.assign({}, ODataService.defaultAjaxOptions);
-        const o = (options || []).reduce(mergeAjaxOptions, d);
+        let o = (options || []).reduce(mergeAjaxOptions, d);
         if (this.options.baseAddress) {
             if (this.options.baseAddress[this.options.baseAddress.length - 1] !== "/" && o.url && o.url[0] !== "/") {
                 o.url = "/" + o.url;
@@ -88,19 +93,16 @@ export class ODataService<TResponse = Response>
             }
         }
 
+        if (this.options.ajaxInterceptor) {
+            o = this.options.ajaxInterceptor.intercept(o);
+        }
+
         return this.options.ajaxProvider.ajax(o)
             .then((r) => {
                 let value = r.value as any;
                 if (value) {
                     if (value.value !== void 0) {
                         value = value.value;
-                    } else {
-                        //delete value["@odata.context"];
-                        Object.keys(value).forEach((key: string) => {
-                            if (key && key[0] === "@") {
-                                delete value[key];
-                            }
-                        });
                     }
                 }
 
