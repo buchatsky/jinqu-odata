@@ -9,7 +9,7 @@
             "address": "localhost",
             "port": 9222,
             "request": "attach",
-            "type": "pwa-chrome",
+            "type": "chrome",
             "sourceMaps": true,
             "timeout": 600000,
             "restart": true,

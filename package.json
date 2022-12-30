@@ -1,6 +1,6 @@
 {
   "name": "@buchatsky/jinqu-odata",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "description": "Jinqu OData implementation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,7 +21,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jin-qu/jinqu-odata"
+    "url": "https://github.com/buchatsky/jinqu-odata"
   },
   "scripts": {
     "test": "mocha --reporter spec",

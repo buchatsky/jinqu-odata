@@ -551,6 +551,30 @@ it("should handle date literal", async () => {
         expect(() => query2.singleAsync()).to.throw();
     });
 
+    it("should handle navigateTo", () => {
+        const query = service.companies()
+            .byKey(5)
+            .navigateTo(c => c.address)
+            .select("id", "text");
+        expect(query.singleAsync()).to.be.fulfilled.and.eventually.be.null;
+
+        const url = provider.options.url;
+        const expectedUrl = `api/Companies(5)/address?$select=${encodeURIComponent("id,text")}`;
+        expect(url).equal(expectedUrl);
+    });
+
+    it("should handle navigateTo many", () => {
+        const query = service.companies()
+            .byKey(5)
+            .navigateTo(c => c.addresses)
+            .where(a => a.text == 'nice')
+        expect(query.toArrayAsync()).to.be.fulfilled.and.eventually.be.null;
+
+        const url = provider.options.url;
+        const expectedUrl = `api/Companies(5)/addresses?$filter=${encodeURIComponent("text eq 'nice'")}`;
+        expect(url).equal(expectedUrl);
+    });
+
     it("should handle updateAsync", async () => {
         const value = getCompany();
         const result = Object.assign({}, value);

@@ -59,12 +59,15 @@ export class ODataService<TResponse = Response>
         let includeResponse = false;
         let countPrm: QueryParameter = null;
         let keyPrm: QueryParameter = null;
+        let navigateToPrm: QueryParameter = null;
         o.params = o.params || [];
         params = params || [];
         let inlineCountEnabled = false;
         params.forEach((p) => {
             if (p.key === ODataFuncs.byKey) {
                 keyPrm = p;
+            } else if (p.key === ODataFuncs.navigateTo) {
+                navigateToPrm = p;
             } else if (p.key === QueryFunc.inlineCount) {
                 o.params.push({ key: "$count", value: "true" });
                 inlineCountEnabled = true;
@@ -79,6 +82,10 @@ export class ODataService<TResponse = Response>
 
         if (keyPrm) {
             o.url += `(${keyPrm.value})`;
+        }
+
+        if (navigateToPrm) {
+            o.url += `/${navigateToPrm.value}`;
         }
 
         if (o.params.length) {

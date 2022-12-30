@@ -15,6 +15,7 @@ export const ODataFuncs = {
     byKey: "byKey",
     expand: "expand",
     filter: "filter",
+    navigateTo: "navigateTo",
     oDataSelect: "oDataSelect",
     setData: "setData",
     thenExpand: "thenExpand",
@@ -60,6 +61,7 @@ export function handleParts(parts: IQueryPart[]): [QueryParameter[], AjaxOptions
     let inlineCount = false;
     let includeResponse = false;
     let orders: IQueryPart[] = [];
+    let navigateTo: IQueryPart;
     let select: IQueryPart;
     let apply: IQueryPart;
     let ctor: Ctor<any>;
@@ -83,6 +85,8 @@ export function handleParts(parts: IQueryPart[]): [QueryParameter[], AjaxOptions
             includeResponse = true;
         } else if (part.type === ODataFuncs.byKey) {
             byKey = part;
+        } else if (part.type === ODataFuncs.navigateTo) {
+            navigateTo = part;
         } else if (part.type === ODataFuncs.oDataSelect) {
             select = part;
         } else if (part.type === ODataFuncs.expand || part.type === ODataFuncs.thenExpand) {
@@ -121,6 +125,11 @@ export function handleParts(parts: IQueryPart[]): [QueryParameter[], AjaxOptions
         }
 
         queryParams.push({ key: ODataFuncs.byKey, value: keyVal });
+    }
+
+    if (navigateTo) {
+        const v = handlePartArg(navigateTo.args[0]);
+        queryParams.push({ key: ODataFuncs.navigateTo, value: v });
     }
 
     if (orders.length) {

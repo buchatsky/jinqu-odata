@@ -61,6 +61,12 @@ export class ODataQuery<
         return this.createOrderedQuery(QueryPart.orderByDescending(keySelector, scopes));
     }
 
+    public navigateTo<TNav extends object>(keySelector: Func1<T, TNav>, ...scopes): IODataQuery<AU<TNav>, TExtra> {
+        //return this.createNavigatedQuery<AU<TNav>>(QueryPart.select(keySelector, scopes));
+        const part = new QueryPart(ODataFuncs.navigateTo, [PartArgument.identifier(keySelector, scopes)]);
+        return this.createNavigatedQuery<AU<TNav>>(part);
+    }
+
     public expand<K1 extends keyof T, K2 extends keyof AU<T[K1]>>(nav: K1, selector?: K2[])
         : IExpandedODataQuery<T, AU<T[K1]>, TExtra>;
     public expand<K1 extends keyof T, K2 extends keyof AU<T[K1]>>(nav: K1, filter: Predicate<AU<T[K1]>>, ...scopes)
@@ -134,9 +140,13 @@ export class ODataQuery<
     protected createOrderedQuery(part: IQueryPart): IOrderedODataQuery<T, TExtra> {
         return new OrderedODataQuery<T, TOptions, TResponse, TExtra>(this.provider, [...this.parts, part]);
     }
-
+    
     protected createExpandedQuery<TNav>(part: IQueryPart): IExpandedODataQuery<T, TNav, TExtra> {
         return new ExpandedODataQuery<T, TNav, TOptions, TResponse, TExtra>(this.provider, [...this.parts, part]);
+    }
+    
+    protected createNavigatedQuery<TNav extends object>(part: IQueryPart): IODataQuery<TNav, TExtra> {
+        return new ODataQuery<TNav, TOptions, TResponse, TExtra>(this.provider, [...this.parts, part]);
     }
 
     public insertAsync(returnInserted?: boolean): PromiseLike<Result<T, TExtra>> {
@@ -213,6 +223,7 @@ export interface IODataQuery<T, TExtra = {}> extends IQueryBase {
     where(predicate: Predicate<T>, ...scopes): IODataQuery<T, TExtra>;
     orderBy(keySelector: Func1<T>, ...scopes): IOrderedODataQuery<T, TExtra>;
     orderByDescending(keySelector: Func1<T>, ...scopes): IOrderedODataQuery<T, TExtra>;
+    navigateTo<TNav extends object>(keySelector: Func1<T, TNav>, ...scopes): IODataQuery<AU<TNav>, TExtra>;
     expand<K1 extends keyof T, K2 extends keyof AU<T[K1]>>(nav: K1, selector?: K2[])
         : IExpandedODataQuery<T, AU<T[K1]>, TExtra>;
     expand<K1 extends keyof T, K2 extends keyof AU<T[K1]>>(nav: K1, filter: Predicate<AU<T[K1]>>, ...scopes)
