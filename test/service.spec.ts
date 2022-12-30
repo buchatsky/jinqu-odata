@@ -567,7 +567,7 @@ it("should handle date literal", async () => {
         const query = service.companies()
             .byKey(5)
             .navigateTo(c => c.addresses)
-            .where(a => a.text == 'nice')
+            .where(a => a.text == 'nice');
         expect(query.toArrayAsync()).to.be.fulfilled.and.eventually.be.null;
 
         const url = provider.options.url;
