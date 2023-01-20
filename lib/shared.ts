@@ -224,7 +224,7 @@ function  handleExp(exp: Expression, scopes: any[]) {
     return retVal;
 }
 
-function  expToStr(exp: Expression, scopes: any[], parameters: string[]): string {
+function  expToStr(exp: Expression, scopes: any[], parameters: string[]) {
     switch (exp.type) {
         case ExpressionType.Literal:
             return literalToStr(exp as LiteralExpression);

@@ -140,11 +140,11 @@ export class ODataQuery<
     protected createOrderedQuery(part: IQueryPart): IOrderedODataQuery<T, TExtra> {
         return new OrderedODataQuery<T, TOptions, TResponse, TExtra>(this.provider, [...this.parts, part]);
     }
-    
+
     protected createExpandedQuery<TNav>(part: IQueryPart): IExpandedODataQuery<T, TNav, TExtra> {
         return new ExpandedODataQuery<T, TNav, TOptions, TResponse, TExtra>(this.provider, [...this.parts, part]);
     }
-    
+
     protected createNavigatedQuery<TNav extends object>(part: IQueryPart): IODataQuery<TNav, TExtra> {
         return new ODataQuery<TNav, TOptions, TResponse, TExtra>(this.provider, [...this.parts, part]);
     }
