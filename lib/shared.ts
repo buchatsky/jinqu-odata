@@ -11,10 +11,13 @@ import {
 } from "jokenizer";
 
 export const ODataFuncs = {
+    action: "action",
     apply: "apply",
     byKey: "byKey",
     expand: "expand",
     filter: "filter",
+    function: "function",
+    funcParams: "funcParams",
     navigateTo: "navigateTo",
     oDataSelect: "oDataSelect",
     setData: "setData",
@@ -58,6 +61,8 @@ export function handleParts(parts: IQueryPart[]): [QueryParameter[], AjaxOptions
     const filters: IQueryPart[] = [];
     let data: IQueryPart;
     let byKey: IQueryPart;
+    let actOrFunc: IQueryPart;
+    let funcParams: IQueryPart;
     let inlineCount = false;
     let includeResponse = false;
     let orders: IQueryPart[] = [];
@@ -87,6 +92,10 @@ export function handleParts(parts: IQueryPart[]): [QueryParameter[], AjaxOptions
             byKey = part;
         } else if (part.type === ODataFuncs.navigateTo) {
             navigateTo = part;
+        } else if (part.type === ODataFuncs.action || part.type === ODataFuncs.function) {
+            actOrFunc = part;
+        } else if (part.type === ODataFuncs.funcParams) {
+            funcParams = part;
         } else if (part.type === ODataFuncs.oDataSelect) {
             select = part;
         } else if (part.type === ODataFuncs.expand || part.type === ODataFuncs.thenExpand) {
@@ -111,7 +120,7 @@ export function handleParts(parts: IQueryPart[]): [QueryParameter[], AjaxOptions
 
     if (byKey) {
         let keyVal: string = null;
-        let argVal = byKey.args[0].literal;
+        const argVal = byKey.args[0].literal;
         if (argVal) {
             if (typeof argVal === "object") {
                 if (Object.keys(argVal).length > 1) {
@@ -130,6 +139,29 @@ export function handleParts(parts: IQueryPart[]): [QueryParameter[], AjaxOptions
     if (navigateTo) {
         const v = handlePartArg(navigateTo.args[0]);
         queryParams.push({ key: ODataFuncs.navigateTo, value: v });
+    }
+
+    if (actOrFunc) {
+        const v = actOrFunc.args[0].literal;
+        queryParams.push({ key: actOrFunc.type, value: v });
+    }
+
+    if (funcParams) {
+        let parVal: string = null;
+        const argVal = funcParams.args[0].literal;
+        if (argVal) {
+            if (typeof argVal === "object") {
+                if (Object.keys(argVal).length > 0) {
+                    parVal = Object.keys(argVal).map((key: string) => `${key}=${quoteIfString(argVal[key])}`).join(",");
+                } else {
+                    throw new Error("Function parameters must have at least one property.");
+                }
+            } else {
+                parVal = quoteIfString(argVal); // ??
+            }
+        }
+
+        queryParams.push({ key: ODataFuncs.funcParams, value: parVal });
     }
 
     if (orders.length) {
