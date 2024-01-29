@@ -3,6 +3,7 @@ import {
     IQueryPart, IQueryProvider, IRequestProvider, QueryFunc, QueryParameter,
 } from "jinqu";
 import {
+    ArrayExpression,
     AssignExpression, BinaryExpression,
     CallExpression, Expression, ExpressionType,
     FuncExpression, GroupExpression, LiteralExpression,
@@ -285,6 +286,8 @@ function  expToStr(exp: Expression, scopes: any[], parameters: string[]) {
             return funcToStr(exp as FuncExpression, scopes, parameters);
         case ExpressionType.Call:
             return callToStr(exp as CallExpression, scopes, parameters);
+        case ExpressionType.Array:
+            return arrayToStr(exp as ArrayExpression, scopes, parameters);
         default:
             throw new Error(`Unsupported expression type ${exp.type}`);
     }
@@ -376,6 +379,11 @@ function  callToStr(exp: CallExpression, scopes: any[], parameters: string[]) {
         return `${handleExp(exp.args[0], scopes)} with ${callee.name}`;
     }
 
+    if (callee.owner.type === ExpressionType.Array && callee.name === 'includes') {
+        //return `${(exp.args[0] as VariableExpression).name} in (${ownerStr})`;
+        return `${expToStr(exp.args[0], scopes, parameters)} in (${ownerStr})`;
+    }
+
     args = exp.args.map((a) => expToStr(a, scopes, parameters)).join(",");
     // handle Math functions
     if (mathFuncs.indexOf(callee.name) !== -1 && ownerStr === "Math") {
@@ -391,6 +399,16 @@ function  callToStr(exp: CallExpression, scopes: any[], parameters: string[]) {
 
     const oDataFunc = functions[callee.name] || callee.name.toLowerCase();
     return `${oDataFunc}(${args})`;
+}
+
+function  arrayToStr(exp: ArrayExpression, scopes: any[], parameters: string[]) {
+    // exclude nulls
+    return exp.items.reduce((result, m) => {
+        if (m) {
+            result.push(expToStr(m, scopes, parameters));
+        }
+        return result;
+    }, []).join(",");
 }
 
 function  valueToStr(value) {

@@ -45,7 +45,7 @@ export class ODataService<TResponse = Response>
         if (!this.options.updateMethod) this.options.updateMethod = "PATCH";
     }
 
-    public request<TResult, TExtra>(params: QueryParameter[], options: AjaxOptions[])
+    public request<TResult, TExtra = {}>(params: QueryParameter[], options: AjaxOptions[])
         : PromiseLike<Result<TResult, TExtra>> {
         const d = Object.assign({}, ODataService.defaultAjaxOptions);
         let o = (options || []).reduce(mergeAjaxOptions, d);

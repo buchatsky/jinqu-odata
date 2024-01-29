@@ -392,6 +392,24 @@ describe("Service tests", () => {
         expect(url).equal(expectedUrl);
     });
 
+    it("should handle Array.contains as lambda", async () => {
+        const query = service.companies().where((c) => ["Netflix","Tesla"].includes(c.name));
+        expect(query.toArrayAsync()).to.be.fulfilled.and.eventually.be.null;
+
+        const url = provider.options.url;
+        const expectedUrl = `api/Companies?$filter=${encodeURIComponent("name in ('Netflix','Tesla')")}`;
+        expect(url).equal(expectedUrl);
+    });
+
+    it("should handle empty Array.contains as string", async () => {
+        const query = service.companies().where("[].includes(id)");
+        expect(query.toArrayAsync()).to.be.fulfilled.and.eventually.be.null;
+
+        const url = provider.options.url;
+        const expectedUrl = `api/Companies?$filter=${encodeURIComponent("id in ()")}`;
+        expect(url).equal(expectedUrl);
+    });
+
     it("should handle date", async () => {
         const date = new Date(1592, 2, 14);
         const query = service.companies().where((c) => c.createDate < date && c.name != null, { date });
