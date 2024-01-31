@@ -1,5 +1,7 @@
 # jinqu-odata - Javascript-Linq to Odata
 
+It's a clone of [jinqu-odata](https://github.com/jin-qu/jinqu-odata) with my issues fixed/implemented.
+
 [![Build Status](https://travis-ci.org/jin-qu/jinqu-odata.svg?branch=master)](https://travis-ci.org/jin-qu/jinqu-odata)
 [![Coverage Status](https://coveralls.io/repos/github/jin-qu/jinqu-odata/badge.svg?branch=master)](https://coveralls.io/github/jin-qu/jinqu-odata?branch=master)
 [![npm version](https://badge.fury.io/js/jinqu-odata.svg)](https://badge.fury.io/js/jinqu-odata)

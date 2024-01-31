@@ -6,15 +6,16 @@
     "outDir": "./dist",
     "declaration": true,
     "downlevelIteration": true,
+    "experimentalDecorators": true,
     "sourceMap": true,
-    "strictFunctionTypes": false,
     "lib": [
-      "es2015",
-      "DOM"
+      "es2016",
+      "dom"
     ]
   },
   "include": [
     "./index.ts",
-    "./lib/**/*.ts"
+    "./lib/**/*.ts",
+    "./test/**/*.ts"
   ]
 }

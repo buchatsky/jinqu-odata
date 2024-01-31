@@ -1,6 +1,6 @@
 {
-  "name": "jinqu-odata",
-  "version": "1.1.3",
+  "name": "@buchatsky/jinqu-odata",
+  "version": "1.1.15",
   "description": "Jinqu OData implementation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,13 +13,15 @@
     "typescript"
   ],
   "files": [
-    "dist",
+    "dist/*.*",
+    "dist/lib",
+    "lib",
     "index.ts",
     "README.md"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jin-qu/jinqu-odata"
+    "url": "https://github.com/buchatsky/jinqu-odata"
   },
   "scripts": {
     "test": "mocha --reporter spec",
@@ -50,17 +52,18 @@
     "karma-ie-launcher": "^1.0.0",
     "karma-mocha": "^2.0.1",
     "karma-typescript": "^5.0.3",
-    "mocha": "^10.2.0",
+    "mocha": "~8.1.3",
     "mocha-junit-reporter": "^2.0.0",
     "node-fetch": "^2.6.0",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
     "ts-node": "^8.10.2",
     "tslint": "^6.1.3",
-    "typescript": "^3.9.7",
+    "typescript": "~4.6.3",
     "whatwg-fetch": "^3.4.0"
   },
   "dependencies": {
+    "class-transformer": "^0.3.1",
     "jinqu": "^1.1.3",
     "jinqu-fetch": "^1.1.1",
     "jokenizer": "^0.4.5"
