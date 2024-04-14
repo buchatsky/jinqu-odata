@@ -59,7 +59,8 @@ export class ODataService<TResponse = Response>
         let includeResponse = false;
         let countPrm: QueryParameter = null;
         let keyPrm: QueryParameter = null;
-        let actOrFuncPrm: QueryParameter = null;
+        let actPrm: QueryParameter = null;
+        let funcPrm: QueryParameter = null;
         let funcParamsPrm: QueryParameter = null;
         let navigateToPrm: QueryParameter = null;
         o.params = o.params || [];
@@ -70,8 +71,10 @@ export class ODataService<TResponse = Response>
                 keyPrm = p;
             } else if (p.key === ODataFuncs.navigateTo) {
                 navigateToPrm = p;
-            } else if (p.key === ODataFuncs.action || p.key === ODataFuncs.function) {
-                actOrFuncPrm = p;
+            } else if (p.key === ODataFuncs.action) {
+                actPrm = p;
+            } else if (p.key === ODataFuncs.function) {
+                funcPrm = p;
             } else if (p.key === ODataFuncs.funcParams) {
                 funcParamsPrm = p;
             } else if (p.key === QueryFunc.inlineCount) {
@@ -94,12 +97,10 @@ export class ODataService<TResponse = Response>
             o.url += `/${navigateToPrm.value}`;
         }
 
-        if (actOrFuncPrm) {
-            o.url += `/${actOrFuncPrm.value}`;
-        }
-
-        if (funcParamsPrm) {
-            o.url += `(${funcParamsPrm.value})`;
+        if (actPrm) {
+            o.url += `/${actPrm.value}`;
+        } else if (funcPrm) {
+            o.url += `/${funcPrm.value}` + (funcParamsPrm ? `(${funcParamsPrm.value})` : "()");
         }
 
         if (o.params.length) {
